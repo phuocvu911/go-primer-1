@@ -12,15 +12,12 @@ func OnesCount32(x uint32) int {
 
 // Len32 calculate how many bits needed to represent x in binary scale
 func Len32(x uint32) int {
-	if x == 0 {
-		return 0
-	}
 	size := 0
-	for x > 1 {
+	for x > 0 {
 		x >>= 1
 		size++
 	}
-	return size + 1
+	return size
 }
 
 // RotateLeft32 rotate binary form of x to left (k%32) time
