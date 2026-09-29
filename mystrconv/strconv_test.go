@@ -60,37 +60,45 @@ func TestFormatInt(t *testing.T) {
 	}
 }
 
-// func TestParseUint(t *testing.T) {
-// 	tests := []struct {
-// 		name    string
-// 		input   string
-// 		base    int
-// 		bitSize int
-// 		want    uint64
-// 		ok      bool
-// 	}{
-// 		{name: "decimal", input: "123456789", base: 10, bitSize: 64, want: 123456789, ok: true},
-// 		{name: "binary", input: "101010", base: 2, bitSize: 64, want: 42, ok: true},
-// 		{name: "hexadecimal", input: "deadBEEF", base: 16, bitSize: 64, want: 0xDEADBEEF, ok: true},
-// 		{name: "base zero detects hexadecimal prefix", input: "0x2a", base: 0, bitSize: 64, want: 42, ok: true},
-// 		{name: "zero", input: "0", base: 10, bitSize: 8, want: 0, ok: true},
-// 		{name: "maximum uint8", input: "255", base: 10, bitSize: 8, want: 255, ok: true},
-// 		{name: "overflow", input: "256", base: 10, bitSize: 8, want: 0, ok: false},
-// 		{name: "negative value", input: "-1", base: 10, bitSize: 64, want: 0, ok: false},
-// 		{name: "invalid digit", input: "12g", base: 10, bitSize: 64, want: 0, ok: false},
-// 		{name: "empty input", input: "", base: 10, bitSize: 64, want: 0, ok: false},
-// 		{name: "invalid base", input: "10", base: 1, bitSize: 64, want: 0, ok: false},
-// 	}
+func TestParseUint(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		base    int
+		bitSize int
+		want    uint64
+		ok      bool
+	}{
+		{name: "decimal", input: "123456789", base: 10, bitSize: 64, want: 123456789, ok: true},
+		{name: "binary", input: "101010", base: 2, bitSize: 64, want: 42, ok: true},
+		{name: "hexadecimal", input: "deadBEEF", base: 16, bitSize: 64, want: 0xDEADBEEF, ok: true},
+		{name: "base zero", input: "0x2a", base: 0, bitSize: 64, want: 0, ok: false},
+		{name: "bitSize zero", input: "6767", base: 10, bitSize: 0, want: 6767, ok: true},
+		{name: "zero", input: "0", base: 10, bitSize: 8, want: 0, ok: true},
+		{name: "maximum uint8", input: "255", base: 10, bitSize: 8, want: 255, ok: true},
+		{name: "overflow", input: "256", base: 10, bitSize: 8, want: 0, ok: false},
+		{name: "negative value", input: "-54", base: 10, bitSize: 64, want: 0, ok: false},
+		{name: "carry a plus sign", input: "+67", base: 10, bitSize: 64, want: 0, ok: false},
+		{name: "carry a sign in middle", input: "82+7", base: 10, bitSize: 64, want: 0, ok: false},
+		{name: "has surrounding space", input: " 123 ", base: 10, bitSize: 64, want: 0, ok: false},
+		{name: "invalid digit", input: "12g", base: 10, bitSize: 64, want: 0, ok: false},
+		{name: "empty input", input: "", base: 10, bitSize: 64, want: 0, ok: false},
+		{name: "invalid base", input: "10", base: 1, bitSize: 64, want: 0, ok: false},
+		{name: "invalid bit size", input: "10", base: 10, bitSize: 100, want: 0, ok: false},
+		{name: "value too large for bitSize", input: "7", base: 2, bitSize: 2, want: 0, ok: false},
+		{name: "contains special char", input: "(666)", base: 10, bitSize: 10, want: 0, ok: false},
+		{name: "should fail", input: "50000000000000000000", base: 10, bitSize: 64, want: 0, ok: false},
+	}
 
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			got, ok := ParseUint(tt.input, tt.base, tt.bitSize)
-// 			if got != tt.want || ok != tt.ok {
-// 				t.Errorf("ParseUint(%q, %d, %d) = (%d, %v), want (%d, %v)", tt.input, tt.base, tt.bitSize, got, ok, tt.want, tt.ok)
-// 			}
-// 		})
-// 	}
-// }
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, ok := ParseUint(tt.input, tt.base, tt.bitSize)
+			if got != tt.want || ok != tt.ok {
+				t.Errorf("ParseUint(%q, %d, %d) = (%d, %v), want (%d, %v)", tt.input, tt.base, tt.bitSize, got, ok, tt.want, tt.ok)
+			}
+		})
+	}
+}
 
 // func TestAtoi(t *testing.T) {
 // 	tests := []struct {

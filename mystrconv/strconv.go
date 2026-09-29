@@ -46,5 +46,51 @@ func FormatInt(i int64, base int) (string, bool) {
 	return res, true
 }
 
-// func ParseUint(s string, base int, bitSize int) (uint64, bool)
+func ParseUint(s string, base int, bitSize int) (uint64, bool) {
+	if base < 2 || base > 36 || bitSize < 0 || bitSize > 64 || len(s) == 0 {
+		return 0, false
+	}
+
+	if bitSize == 0 {
+		bitSize = 64
+	}
+
+	result := uint64(0)
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		var digitValue int
+
+		if c >= '0' && c <= '9' {
+			digitValue = int(c - '0')
+		} else if c >= 'a' && c <= 'z' {
+			digitValue = int(c - 'a' + 10)
+		} else if c >= 'A' && c <= 'Z' {
+			digitValue = int(c - 'A' + 10)
+		} else {
+			return 0, false
+		}
+
+		if digitValue >= base {
+			return 0, false
+		}
+
+		// Check for overflow, because the number wrap around when it become larger than Maxint64
+		newResult := result*uint64(base) + uint64(digitValue)
+		if newResult/uint64(base) != result || newResult%uint64(base) != uint64(digitValue) {
+			return 0, false
+		}
+		result = newResult
+	}
+
+	// Check bitSize can hold the number
+	if bitSize < 64 {
+		maxVal := uint64(1) << uint(bitSize)
+		if result >= maxVal {
+			return 0, false
+		}
+	}
+
+	return result, true
+}
+
 // func Atoi(s string) (int, bool)
