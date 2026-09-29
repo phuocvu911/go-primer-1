@@ -93,4 +93,33 @@ func ParseUint(s string, base int, bitSize int) (uint64, bool) {
 	return result, true
 }
 
-// func Atoi(s string) (int, bool)
+const maxInt = 1<<63 - 1
+
+func Atoi(s string) (int, bool) {
+	if len(s) == 0 {
+		return 0, false
+	}
+	sign := s[0]
+	isNeg := false
+	if sign == '+' || sign == '-' {
+		s = s[1:]
+		if sign == '-' {
+			isNeg = true
+		}
+	}
+	res, ok := ParseUint(s, 10, 64)
+	if !ok {
+		return 0, false
+	}
+
+	if isNeg {
+		if res > maxInt+1 {
+			return 0, false
+		}
+		return int(-res), true 
+	}
+	if res > maxInt {
+		return 0, false
+	}
+	return int(res), true
+}

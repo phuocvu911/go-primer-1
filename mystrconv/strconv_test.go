@@ -100,28 +100,35 @@ func TestParseUint(t *testing.T) {
 	}
 }
 
-// func TestAtoi(t *testing.T) {
-// 	tests := []struct {
-// 		name  string
-// 		input string
-// 		want  int
-// 		ok    bool
-// 	}{
-// 		{name: "zero", input: "0", want: 0, ok: true},
-// 		{name: "positive", input: "12345", want: 12345, ok: true},
-// 		{name: "negative", input: "-12345", want: -12345, ok: true},
-// 		{name: "leading plus", input: "+42", want: 42, ok: true},
-// 		{name: "leading whitespace is invalid", input: " 42", want: 0, ok: false},
-// 		{name: "decimal point is invalid", input: "42.0", want: 0, ok: false},
-// 		{name: "empty input", input: "", want: 0, ok: false},
-// 	}
+func TestAtoi(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  int
+		ok    bool
+	}{
+		{name: "zero", input: "-0", want: 0, ok: true},
+		{name: "positive", input: "12345", want: 12345, ok: true},
+		{name: "negative", input: "-12345", want: -12345, ok: true},
+		{name: "max negative", input: "-9223372036854775808", want: -9223372036854775808, ok: true},
+		{name: "overflow negative", input: "-9223372036854775809", want: 0, ok: false},
+		{name: "leading plus", input: "+42", want: 42, ok: true},
+		{name: "leading whitespace is invalid", input: " 42", want: 0, ok: false},
+		{name: "decimal point is invalid", input: "42.0", want: 0, ok: false},
+		{name: "empty input", input: "", want: 0, ok: false},
+		{name: "contain char", input: "123abc", want: 0, ok: false},
+		{name: "sign in the middle", input: "123+789", want: 0, ok: false},
+		{name: "has surrounding space", input: " 666 ", want: 0, ok: false},
+		{name: "overflow possitive", input: "9223372036854775808", want: 0, ok: false},
+		{name: "more than 1 sign", input: "+-123", want: 0, ok: false},
+	}
 
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			got, ok := Atoi(tt.input)
-// 			if got != tt.want || ok != tt.ok {
-// 				t.Errorf("Atoi(%q) = (%d, %v), want (%d, %v)", tt.input, got, ok, tt.want, tt.ok)
-// 			}
-// 		})
-// 	}
-// }
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, ok := Atoi(tt.input)
+			if got != tt.want || ok != tt.ok {
+				t.Errorf("Atoi(%q) = (%d, %v), want (%d, %v)", tt.input, got, ok, tt.want, tt.ok)
+			}
+		})
+	}
+}
