@@ -116,7 +116,7 @@ func Atoi(s string) (int, bool) {
 		if res > maxInt+1 {
 			return 0, false
 		}
-		return int(-res), true 
+		return int(-res), true
 	}
 	if res > maxInt {
 		return 0, false
